@@ -41,7 +41,7 @@ class LearningAgent(Agent):
         if testing == True:
             self.epsilon = 0
             self.alpha = 0
-       self.epsilon = self.epsilon - 0.05
+        self.epsilon = self.epsilon - 0.05
 
 
         return None
@@ -89,15 +89,21 @@ class LearningAgent(Agent):
         # When learning, check if the 'state' is not in the Q-table
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
-#        valid_actions_dict = ()
-#        if self.learning = True:
-#            for store_states in self.Q:
-#                if state != store_states:
-#                    for a in valid_actions:
-#                        valid_actions_dict.update({a:0.0})
-#                    self.Q.update(state:valid_actions_dict) 
-#
-
+        valid_actions_dict = ()
+        if self.learning = True:
+            for store_states in self.Q:
+                if state == store_states:
+                    continue
+                else:
+                    if state[1] == 'red' and input[3] == 'None':
+                        valid_actions_dict = {None:0.0 , 'right':0.0 }
+                    elif state[1] == 'green' and state[2] == None and state[0] \
+                    == 'left':
+                        valid_actions_dict = {None:0.0 , 'left':0.0 }
+                    else:
+                        for a in self.valid_actions:
+                            valid_actions_dict.update({a:0.0})
+                    self.Q.update(state:valid_actions_dict) 
 
         return
 
