@@ -31,7 +31,7 @@ class LearningAgent(Agent):
 
         # Select the destination as the new location to route to
         self.planner.route_to(destination)
-        
+
         ########### 
         ## TO DO ##
         ###########
@@ -59,9 +59,8 @@ class LearningAgent(Agent):
         ########### 
         ## TO DO ##
         ###########
-        # Set 'state' as a tuple of relevant data for the agent        
+        # Set 'state' as a tuple of relevant data for the agent 
         state = (waypoint,inputs['light'],inputs['oncoming'],inputs['left']);
-        print state
 
         return state
 
@@ -75,9 +74,11 @@ class LearningAgent(Agent):
         ###########
         # Calculate the maximum Q-value of all actions for a given state
 
-        maxQ = None
+        for store_states in self.Q:
+            if state == store_states:
+                maxQ = max(self.Q[store_states].iteritems(), key=operator.itemgetter(1))[0]
 
-        return maxQ 
+        return maxQ
 
 
     def createQ(self, state):
@@ -90,23 +91,26 @@ class LearningAgent(Agent):
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
         valid_actions_dict = ()
-        if self.learning = True:
+        found_flag = False
+        if self.learning == True:
             for store_states in self.Q:
                 if state == store_states:
-                    continue
-                else:
-                    if state[1] == 'red' and input[3] == 'None':
-                        valid_actions_dict = {None:0.0 , 'right':0.0 }
-                    elif state[1] == 'green' and state[2] == None and state[0] \
-                    == 'left':
+                    found_flag = True
+                    break
+            if found_flag == False:
+                if state[1] == 'red' and input[3] == 'None':
+                    valid_actions_dict = {None:0.0 , 'right':0.0 }
+                elif state[1] == 'green' and state[2] == None and state[0] == 'left':
                         valid_actions_dict = {None:0.0 , 'left':0.0 }
-                    else:
-                        for a in self.valid_actions:
-                            valid_actions_dict.update({a:0.0})
-                    self.Q.update(state:valid_actions_dict) 
+                else:
+                    for a in self.valid_actions:
+                        valid_actions_dict.update({a:0.0})
+                self.Q.update({state:valid_actions_dict})
 
         return
 
+    def random_calculator(self,epsilon):
+        return 'choose_random' if random.random() < epsilon else 'choose_Q'
 
     def choose_action(self, state):
         """ The choose_action function is called when the agent is asked to choose
@@ -126,6 +130,14 @@ class LearningAgent(Agent):
 
         if self.learning == False:
             action = random.choice(self.valid_actions)
+        else:
+            result = self.random_calculator(self.epsilon)
+            if result == 'choose_random':
+                action = random.choice(self.valid_actions)
+            else:
+                action = maxQ(self.state)
+
+
         return action
 
 
@@ -139,6 +151,10 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
+        if self.learning == True:
+            self.createQ(state)
+            oldq = self.Q[(state,action)]
+            self.Q[(state,action)] = reward + self.alpha * (self.get_maxQ(self.build_state) - oldq)
 
         return
 
