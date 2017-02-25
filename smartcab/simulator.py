@@ -233,7 +233,6 @@ class Simulator(object):
                 f.write("/-----------------------------------------\n")
                 f.write("| State-action rewards from Q-Learning\n")
                 f.write("\-----------------------------------------\n\n")
-
                 for state in a.Q:
                     f.write("{}\n".format(state))
                     for action, reward in a.Q[state].iteritems():

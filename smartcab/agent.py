@@ -23,7 +23,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-
+        self.spawn_state = 0
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
             'testing' is set to True if testing trials are being used
@@ -79,6 +79,8 @@ class LearningAgent(Agent):
             if state == store_states:
                 maxQ = max(self.Q[store_states].iteritems(), key=operator.itemgetter(1))[0]
 
+                    
+                
         return maxQ
 
 
@@ -91,24 +93,20 @@ class LearningAgent(Agent):
         # When learning, check if the 'state' is not in the Q-table
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
-        valid_actions_dict = {}
-        found_flag = False
-        if self.learning == True:
-            for store_states in self.Q:
-                if state == store_states:
-                    found_flag = True
-                    break
-            if found_flag == False:
-                valid_actions_dict = {None:0.0 , 'right':0.0 , 'left':0.0 ,'fordward':0.0}
-                self.Q[state] = valid_actions_dict 
-              #  if state[1] == 'red' and state[3] == None:
-              #      valid_actions_dict = {None:0.0 , 'right':0.0 }
-              #  elif state[1] == 'green' and state[2] == None and state[0] == 'left':
-              #      valid_actions_dict = {None:0.0 , 'left':0.0 }
-              #  else:
-              #      for a in self.valid_actions:
-              #          valid_actions_dict[a] = 0.0
-              #  self.Q[state] = valid_actions_dict
+        valid_actions_dict = {None:0.0 , 'right':0.0 , 'left':0.0,'forward':0.0}
+        valid_action_red_no_fwd = {None:0.0, 'right':0.0}
+        valid_action_green_no_traffic = {'forward':0.0, 'left':0.0,'right':0.0}
+        if self.Q.get(state) == None:
+            if state[1] == 'red' and state[3] != 'forward':
+                self.Q.update({state:valid_action_red_no_fwd})
+            elif state[1] == 'red' and state[3] == 'forward':
+                self.Q.update({state:{None:0.0}})
+            elif state[1] == 'green' and state[2] != 'forward':
+                self.Q.update({state:valid_action_green_no_traffic})
+            elif state[1] == 'green' and state[2] == 'forward':
+                self.Q.update({state:{None:0.0,'forward':0.0, 'right':0.0}})
+            else:
+                self.Q.update({state:valid_actions_dict})
         return
 
     def random_calculator(self,epsilon):
@@ -155,11 +153,12 @@ class LearningAgent(Agent):
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning == True:
             available_actions = self.Q.get(state,None)
+            print 'dime el estado {}'.format(state)
+            print 'estas son las action: {}'.format(available_actions)
             oldq = available_actions.get(action,None)
             if oldq == None:
                 oldq = reward
-            self.Q[(state,action)] = reward + self.alpha * (self.get_maxQ(self.build_state) - oldq)
-
+            self.Q.get(state)[action] = reward + self.alpha * (self.get_maxQ(self.build_state) - oldq)
         return
 
 
