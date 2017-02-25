@@ -99,15 +99,16 @@ class LearningAgent(Agent):
                     found_flag = True
                     break
             if found_flag == False:
-                if state[1] == 'red' and state[3] == None:
-                    valid_actions_dict = {None:0.0 , 'right':0.0 }
-                elif state[1] == 'green' and state[2] == None and state[0] == 'left':
-                    valid_actions_dict = {None:0.0 , 'left':0.0 }
-                else:
-                    for a in self.valid_actions:
-                        valid_actions_dict.update({a:0.0})
-                self.Q.update({state:valid_actions_dict})
-
+                valid_actions_dict = {None:0.0 , 'right':0.0 , 'left':0.0 ,'fordward':0.0}
+                self.Q[state] = valid_actions_dict 
+              #  if state[1] == 'red' and state[3] == None:
+              #      valid_actions_dict = {None:0.0 , 'right':0.0 }
+              #  elif state[1] == 'green' and state[2] == None and state[0] == 'left':
+              #      valid_actions_dict = {None:0.0 , 'left':0.0 }
+              #  else:
+              #      for a in self.valid_actions:
+              #          valid_actions_dict[a] = 0.0
+              #  self.Q[state] = valid_actions_dict
         return
 
     def random_calculator(self,epsilon):
@@ -153,7 +154,8 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning == True:
-            oldq = self.Q.get((state,action))
+            available_actions = self.Q.get(state,None)
+            oldq = available_actions.get(action,None)
             if oldq == None:
                 oldq = reward
             self.Q[(state,action)] = reward + self.alpha * (self.get_maxQ(self.build_state) - oldq)
