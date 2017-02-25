@@ -153,8 +153,6 @@ class LearningAgent(Agent):
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning == True:
             available_actions = self.Q.get(state,None)
-            print 'dime el estado {}'.format(state)
-            print 'estas son las action: {}'.format(available_actions)
             oldq = available_actions.get(action,None)
             if oldq == None:
                 oldq = reward
