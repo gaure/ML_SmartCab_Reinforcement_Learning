@@ -8,7 +8,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
+    def __init__(self, env, learning=True, epsilon=0.8, alpha=0.4):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -23,7 +23,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-        self.spawn_state = 0
+        self.trail_number = 0
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
             'testing' is set to True if testing trials are being used
@@ -41,7 +41,9 @@ class LearningAgent(Agent):
         if testing == True:
             self.epsilon = 0
             self.alpha = 0
-        self.epsilon = self.epsilon - 0.05
+        # self.epsilon = self.epsilon - 0.05
+        self.trail_number += 1
+        self.epsilon = self.epsilon**self.trail_number
 
 
         return None
@@ -184,7 +186,7 @@ def run():
     #   verbose     - set to True to display additional output from the simulation
     #   num_dummies - discrete number of dummy agents in the environment, default is 100
     #   grid_size   - discrete number of intersections (columns, rows), default is (8, 6)
-    env = Environment(verbose=True)
+    env = Environment()
     
     ##############
     # Create the driving agent
@@ -210,15 +212,15 @@ def run():
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
     #sim = Simulator(env, update_delay = 5)
-    sim = Simulator(env, update_delay = 0.01, log_metrics = True )
-    
-        ##############
+    sim = Simulator(env, update_delay = 0.01, log_metrics = True, optimized = True )
+
+    ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run()
-    # sim.run(n_test = 10 )
+    # sim.run()
+    sim.run(n_test = 10, tolerance = 0.10 )
     
 
 
