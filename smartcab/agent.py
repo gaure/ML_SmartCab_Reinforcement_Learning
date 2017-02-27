@@ -8,7 +8,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=0.8, alpha=0.4):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.50):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -41,11 +41,9 @@ class LearningAgent(Agent):
         if testing == True:
             self.epsilon = 0
             self.alpha = 0
-        # self.epsilon = self.epsilon - 0.05
+        #self.epsilon = self.epsilon - 0.05
         self.trail_number += 1
-        self.epsilon = self.epsilon**self.trail_number
-
-
+        self.epsilon = 0.90**self.trail_number
         return None
 
     def build_state(self):
@@ -95,20 +93,11 @@ class LearningAgent(Agent):
         # When learning, check if the 'state' is not in the Q-table
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
-        valid_actions_dict = {None:0.0 , 'right':0.0 , 'left':0.0,'forward':0.0}
-        valid_action_red_no_fwd = {None:0.0, 'right':0.0}
-        valid_action_green_no_traffic = {'forward':0.0, 'left':0.0,'right':0.0}
+        action_state_dict = {}
         if self.Q.get(state) == None:
-            if state[1] == 'red' and state[3] != 'forward':
-                self.Q.update({state:valid_action_red_no_fwd})
-            elif state[1] == 'red' and state[3] == 'forward':
-                self.Q.update({state:{None:0.0}})
-            elif state[1] == 'green' and state[2] != 'forward':
-                self.Q.update({state:valid_action_green_no_traffic})
-            elif state[1] == 'green' and state[2] == 'forward':
-                self.Q.update({state:{None:0.0,'forward':0.0, 'right':0.0}})
-            else:
-                self.Q.update({state:valid_actions_dict})
+            for a in self.valid_actions:
+                action_state_dict.update({a:0.0})
+                self.Q.update({state:action_state_dict}) 
         return
 
     def random_calculator(self,epsilon):
@@ -213,6 +202,7 @@ def run():
     #   optimized    - set to True to change the default log file name
     #sim = Simulator(env, update_delay = 5)
     sim = Simulator(env, update_delay = 0.01, log_metrics = True, optimized = True )
+    #sim = Simulator(env, update_delay = 0.01, log_metrics = True)
 
     ##############
     # Run the simulator
@@ -220,7 +210,9 @@ def run():
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
     # sim.run()
-    sim.run(n_test = 10, tolerance = 0.10 )
+    sim.run(n_test = 10, tolerance = 0.01 )
+
+    #sim.run(n_test = 10)
     
 
 
