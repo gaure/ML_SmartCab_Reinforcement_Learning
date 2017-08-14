@@ -1,21 +1,7 @@
-# Machine Learning Engineer Nanodegree
-# Reinforcement Learning
-## Project: Train a Smartcab How to Drive
+ML_SmartCab_Reinforcement_Learning.
+Created as part of the Udacity Machine Learning Engineer Nanodegree
+The project uses Python 2.6
 
-### Install
+In this project I trained a smart agent (smartcab) to reach a destination. By using a Q-learning function my agent learned a policy that allow it to navigate an environment and reach a destination as efficiently as possible. The agent learning process was done through exploration of the environment.
 
-This project requires **Python 2.7** with the [pygame](https://www.pygame.org/wiki/GettingStarted
-) library installed
-
-### Code
-
-Template code is provided in the `smartcab/agent.py` python file. Additional supporting python code can be found in `smartcab/enviroment.py`, `smartcab/planner.py`, and `smartcab/simulator.py`. Supporting images for the graphical user interface can be found in the `images` folder. While some code has already been implemented to get you started, you will need to implement additional functionality for the `LearningAgent` class in `agent.py` when requested to successfully complete the project. 
-
-### Run
-
-In a terminal or command window, navigate to the top-level project directory `smartcab/` (that contains this README) and run one of the following commands:
-
-```python smartcab/agent.py```  
-```python -m smartcab.agent```
-
-This will run the `agent.py` file and execute your agent code.
+The project contains the agent code, the environment API and some visualization code.
